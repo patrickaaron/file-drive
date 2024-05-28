@@ -1,9 +1,11 @@
 import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { getUser } from "./users";
 
 export const createFile = mutation({
   args: {
     name: v.string(),
+    orgId: v.string(),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -12,12 +14,30 @@ export const createFile = mutation({
       throw new ConvexError("you must be logged in to upload a file");
     }
 
-    await ctx.db.insert("files", { name: args.name });
+    const userId = identity.subject;
+
+    const currentUser = await getUser(ctx, userId);
+
+    if (!currentUser) {
+      throw new ConvexError("user was not found");
+    }
+
+    const isPersonalWorskpace = userId === args.orgId;
+
+    if (!currentUser.orgIds.includes(args.orgId) && !isPersonalWorskpace) {
+      throw new ConvexError(
+        "user does not belong to organization " + args.orgId
+      );
+    }
+
+    await ctx.db.insert("files", { name: args.name, orgId: args.orgId });
   },
 });
 
 export const getFiles = query({
-  args: {},
+  args: {
+    orgId: v.string(),
+  },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
 
@@ -25,7 +45,10 @@ export const getFiles = query({
       return [];
     }
 
-    const files = await ctx.db.query("files").collect();
+    const files = await ctx.db
+      .query("files")
+      .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
+      .collect();
     return files;
   },
 });
