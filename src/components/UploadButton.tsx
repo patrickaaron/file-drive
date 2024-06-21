@@ -54,10 +54,18 @@ export const UploadButton = () => {
 
   const isSubmitting = form.formState.isSubmitting;
 
+  const fileTypes = {
+    "application/pdf": "pdf",
+    "image/png": "image",
+    "image/jpeg": "image",
+    "text/csv": "csv",
+  } as Record<string, "pdf" | "image" | "csv">;
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     if (!orgId) return;
 
     const selectedFile = values.file[0];
+    console.log(selectedFile.type);
     // Step 1: Get a short-lived upload URL
     const postURl = await generateUploadUrl();
     // Step 2: POST the file to the URL
@@ -69,7 +77,12 @@ export const UploadButton = () => {
     const { storageId } = await result.json();
     // Step 3: Save the newly allocated storage id to the database
     try {
-      await createFile({ name: values.title, fileId: storageId, orgId });
+      await createFile({
+        name: values.title,
+        fileId: storageId,
+        orgId,
+        type: fileTypes[selectedFile.type],
+      });
 
       setIsOpen(false);
 
