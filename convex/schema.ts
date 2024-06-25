@@ -13,7 +13,12 @@ export default defineSchema({
     type: v.union(v.literal("image"), v.literal("csv"), v.literal("pdf")),
     fileId: v.id("_storage"),
     orgId: v.string(),
-  }).index("by_orgId", ["orgId"]),
+  })
+    .index("by_orgId", ["orgId"])
+    .searchIndex("search_name", {
+      searchField: "name",
+      filterFields: ["orgId"],
+    }),
   users: defineTable({
     clerkId: v.string(),
     orgIds: v.array(v.string()),

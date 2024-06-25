@@ -12,7 +12,10 @@ export function Header() {
       <div className="container mx-auto flex justify-between items-center">
         <div>FileDrive</div>
         <div className="flex items-center gap-2">
-          <OrganizationSwitcher />
+          <OrganizationSwitcher
+            afterSelectOrganizationUrl="/"
+            afterSelectPersonalUrl="/"
+          />
           <UserButton />
           <SignedOut>
             <SignInButton>

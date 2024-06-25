@@ -1,5 +1,7 @@
 import { ConvexError, v } from "convex/values";
 import { mutation, query } from "./_generated/server";
+import { Doc } from "./_generated/dataModel";
+
 import { getUser } from "./users";
 import { fileTypes } from "./schema";
 
@@ -54,6 +56,7 @@ export const createFile = mutation({
 export const getFiles = query({
   args: {
     orgId: v.string(),
+    query: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -62,10 +65,21 @@ export const getFiles = query({
       return [];
     }
 
-    const files = await ctx.db
-      .query("files")
-      .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
-      .collect();
+    let files: Doc<"files">[] = [];
+
+    if (args.query) {
+      files = await ctx.db
+        .query("files")
+        .withSearchIndex("search_name", (q) =>
+          q.search("name", args.query!).eq("orgId", args.orgId)
+        )
+        .collect();
+    } else {
+      files = await ctx.db
+        .query("files")
+        .withIndex("by_orgId", (q) => q.eq("orgId", args.orgId))
+        .collect();
+    }
 
     return Promise.all(
       files.map(async (file) => ({

@@ -41,15 +41,20 @@ export const FileCard = ({
     <Card className="group relative">
       <CardHeader>
         <CardTitle>
-          <div className="flex items-center gap-x-3">
+          <div className="flex items-center gap-x-3 ">
             {fileIcon[file.type]}
-            {file.name}
+            <div className="truncate">{file.name}</div>
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent className="h-[200px] flex justify-center items-center">
+      <CardContent className="h-[200px] flex justify-center items-center relative">
         {file.type === "image" && (
-          <Image alt={file.name} height={100} width={250} src={file.url!} />
+          <Image
+            alt={file.name}
+            fill
+            src={file.url!}
+            className="object-cover h-full w-full p-[inherit]"
+          />
         )}
         {file.type === "pdf" && (
           <Image alt={file.name} height={100} width={200} src="/pdf.webp" />
