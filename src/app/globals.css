@@ -80,3 +80,7 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+.active-link {
+  @apply text-blue-500 !bg-blue-100/50 before:absolute before:right-0 before:h-full before:w-1 before:bg-[#2869ff];
+}

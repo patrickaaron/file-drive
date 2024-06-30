@@ -1,6 +1,13 @@
 import Image from "next/image";
 import { useState } from "react";
-import { File, FileImage, MoreVertical, Sheet, Trash } from "lucide-react";
+import {
+  File,
+  FileImage,
+  MoreVertical,
+  Sheet,
+  StarIcon,
+  Trash,
+} from "lucide-react";
 import { useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Doc } from "../../convex/_generated/dataModel";
@@ -28,6 +35,7 @@ export const FileCard = ({
   file: Doc<"files"> & { url?: string | null | undefined };
 }) => {
   const deleteFile = useMutation(api.files.deleteFile);
+  const toggleFavorite = useMutation(api.files.toggleFavorite);
   const { toast } = useToast();
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
 
@@ -79,8 +87,19 @@ export const FileCard = ({
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-60" align="start" side="bottom">
-          <DropdownMenuItem onClick={() => setIsDeleteDialogOpen(true)}>
-            <Trash className="h-4 w-4 mr-2" />
+          <DropdownMenuItem
+            onClick={() => {
+              toggleFavorite({ fileId: file._id });
+            }}
+          >
+            <StarIcon className="h-4 w-4 mr-2" />
+            Favorite
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={() => setIsDeleteDialogOpen(true)}
+            className="text-red-500"
+          >
+            <Trash className="h-4 w-4 mr-2 " />
             Delete
           </DropdownMenuItem>
         </DropdownMenuContent>

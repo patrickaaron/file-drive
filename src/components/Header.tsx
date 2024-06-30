@@ -8,9 +8,9 @@ import {
 
 export function Header() {
   return (
-    <div className="border-b py-4 bg-gray-50">
-      <div className="container mx-auto flex justify-between items-center">
-        <div>FileDrive</div>
+    <div className="border-b bg-gray-50">
+      <div className="flex justify-between items-center p-4">
+        <div></div>
         <div className="flex items-center gap-2">
           <OrganizationSwitcher
             afterSelectOrganizationUrl="/"

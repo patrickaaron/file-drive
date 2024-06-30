@@ -19,6 +19,13 @@ export default defineSchema({
       searchField: "name",
       filterFields: ["orgId"],
     }),
+  favorites: defineTable({
+    userId: v.id("users"),
+    fileId: v.id("files"),
+    orgId: v.string(),
+  })
+    .index("by_user_org", ["userId", "orgId"])
+    .index("by_user_file_org", ["userId", "fileId", "orgId"]),
   users: defineTable({
     clerkId: v.string(),
     orgIds: v.array(v.string()),

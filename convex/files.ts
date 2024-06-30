@@ -1,4 +1,5 @@
 import { ConvexError, v } from "convex/values";
+import { getAllOrThrow } from "convex-helpers/server/relationships";
 import { mutation, query } from "./_generated/server";
 import { Doc } from "./_generated/dataModel";
 
@@ -56,7 +57,8 @@ export const createFile = mutation({
 export const getFiles = query({
   args: {
     orgId: v.string(),
-    query: v.optional(v.string()),
+    search: v.optional(v.string()),
+    favorites: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -65,13 +67,41 @@ export const getFiles = query({
       return [];
     }
 
+    const currentUser = await getUser(ctx, identity.subject);
+
+    if (!currentUser) {
+      return [];
+    }
+
     let files: Doc<"files">[] = [];
 
-    if (args.query) {
+    if (args.favorites) {
+      const favorites = await ctx.db
+        .query("favorites")
+        .withIndex("by_user_org", (q) =>
+          q.eq("userId", currentUser._id).eq("orgId", args.orgId)
+        )
+        .order("asc")
+        .collect();
+
+      const ids = favorites.map((q) => q.fileId);
+
+      files = await getAllOrThrow(ctx.db, ids);
+
+      return Promise.all(
+        files.map(async (file) => ({
+          ...file,
+          ...{ url: await ctx.storage.getUrl(file.fileId) },
+          isFavorite: !!args.favorites,
+        }))
+      );
+    }
+
+    if (args.search) {
       files = await ctx.db
         .query("files")
         .withSearchIndex("search_name", (q) =>
-          q.search("name", args.query!).eq("orgId", args.orgId)
+          q.search("name", args.search!).eq("orgId", args.orgId)
         )
         .collect();
     } else {
@@ -85,6 +115,7 @@ export const getFiles = query({
       files.map(async (file) => ({
         ...file,
         ...{ url: await ctx.storage.getUrl(file.fileId) },
+        isFavorite: !!args.favorites,
       }))
     );
   },
@@ -124,5 +155,60 @@ export const deleteFile = mutation({
     }
 
     await ctx.db.delete(args.fileId);
+  },
+});
+
+export const toggleFavorite = mutation({
+  args: {
+    fileId: v.id("files"),
+  },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+
+    if (!identity) {
+      throw new ConvexError("Unauthorized");
+    }
+
+    const userId = identity.subject;
+
+    const file = await ctx.db.get(args.fileId);
+
+    if (!file) {
+      throw new ConvexError("This file does not exist");
+    }
+
+    const currentUser = await getUser(ctx, userId);
+
+    if (!currentUser) {
+      throw new ConvexError("user was not found");
+    }
+
+    const isPersonalWorskpace = userId === file.orgId;
+
+    if (!currentUser.orgIds.includes(file.orgId) && !isPersonalWorskpace) {
+      throw new ConvexError(
+        "user does not belong to organization " + file.orgId
+      );
+    }
+
+    const favorite = await ctx.db
+      .query("favorites")
+      .withIndex("by_user_file_org", (q) =>
+        q
+          .eq("userId", currentUser._id)
+          .eq("fileId", file._id)
+          .eq("orgId", file.orgId)
+      )
+      .first();
+
+    if (favorite) {
+      await ctx.db.delete(favorite._id);
+    } else {
+      await ctx.db.insert("favorites", {
+        userId: currentUser._id,
+        fileId: file._id,
+        orgId: file.orgId,
+      });
+    }
   },
 });

@@ -1,37 +1,34 @@
 "use client";
 
 import Image from "next/image";
-import { useOrganization, useAuth } from "@clerk/nextjs";
 import { Loader } from "lucide-react";
 
 import { useQuery } from "convex/react";
-import { api } from "../../convex/_generated/api";
+import { api } from "../../../convex/_generated/api";
 
-import { UploadButton } from "@/components/UploadButton";
 import { FileCard } from "@/components/FileCard";
 import { SearchInput } from "@/components/SearchInput";
+import { UploadButton } from "@/components/UploadButton";
 
-type HomeProps = {
-  searchParams: { search: string };
-};
+interface FileBrowserProps {
+  orgId: string;
+  query: {
+    search?: string;
+    favorites?: boolean;
+  };
+}
 
-export default function Home({ searchParams }: HomeProps) {
-  const { organization } = useOrganization();
-  const { userId } = useAuth();
-
-  const orgId = organization?.id ?? userId;
-
-  const files = useQuery(
-    api.files.getFiles,
-    orgId ? { query: searchParams.search, orgId } : "skip"
-  );
+export const FileBrowser = ({ orgId, query }: FileBrowserProps) => {
+  const files = useQuery(api.files.getFiles, { orgId, ...query });
 
   const isLoading = files === undefined;
 
   return (
-    <main className="container mx-auto pt-12">
+    <div>
       <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold">Your Files</h1>
+        <h1 className="text-4xl font-bold">
+          {!query.favorites ? "Your Files" : "Your Favorites"}
+        </h1>
         <UploadButton />
       </div>
       <SearchInput disabled={isLoading} />
@@ -50,13 +47,13 @@ export default function Home({ searchParams }: HomeProps) {
             height={200}
             src="/empty.svg"
           />
-          {!searchParams.search ? (
+          {!query.search ? (
             <p>This organization does not have any files yet</p>
           ) : (
             <p>No files found</p>
           )}
 
-          {!searchParams.search && <UploadButton />}
+          {!query.search && <UploadButton />}
         </div>
       )}
       {/* Render file cards */}
@@ -65,6 +62,6 @@ export default function Home({ searchParams }: HomeProps) {
           return <FileCard key={file._id} file={file} />;
         })}
       </div>
-    </main>
+    </div>
   );
-}
+};
