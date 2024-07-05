@@ -92,7 +92,7 @@ export const getFiles = query({
         files.map(async (file) => ({
           ...file,
           ...{ url: await ctx.storage.getUrl(file.fileId) },
-          isFavorite: !!args.favorites,
+          isFavorite: true,
         }))
       );
     }
@@ -111,13 +111,23 @@ export const getFiles = query({
         .collect();
     }
 
-    return Promise.all(
-      files.map(async (file) => ({
-        ...file,
-        ...{ url: await ctx.storage.getUrl(file.fileId) },
-        isFavorite: !!args.favorites,
-      }))
-    );
+    const filesWithFavoriteRelation = files.map(async (file) => {
+      return ctx.db
+        .query("favorites")
+        .withIndex("by_user_file", (q) =>
+          q.eq("userId", currentUser._id).eq("fileId", file._id)
+        )
+        .unique()
+        .then(async (favorite) => {
+          return {
+            ...file,
+            ...{ url: await ctx.storage.getUrl(file.fileId) },
+            isFavorite: !!favorite,
+          };
+        });
+    });
+
+    return Promise.all(filesWithFavoriteRelation);
   },
 });
 

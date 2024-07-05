@@ -5,6 +5,7 @@ import {
   FileImage,
   MoreVertical,
   Sheet,
+  Star,
   StarIcon,
   Trash,
 } from "lucide-react";
@@ -28,12 +29,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useToast } from "@/components/ui/use-toast";
 import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
+import { cn } from "@/lib/utils";
 
-export const FileCard = ({
-  file,
-}: {
-  file: Doc<"files"> & { url?: string | null | undefined };
-}) => {
+interface FileCardProps {
+  file: Doc<"files"> & { url?: string | null | undefined; isFavorite: boolean };
+}
+export const FileCard = ({ file }: FileCardProps) => {
   const deleteFile = useMutation(api.files.deleteFile);
   const toggleFavorite = useMutation(api.files.toggleFavorite);
   const { toast } = useToast();
@@ -46,10 +47,10 @@ export const FileCard = ({
   };
 
   return (
-    <Card className="group relative">
+    <Card className="group relative border rounded-lg overflow-hidden">
       <CardHeader>
         <CardTitle>
-          <div className="flex items-center gap-x-3 ">
+          <div className="flex items-center gap-x-3 text-base">
             {fileIcon[file.type]}
             <div className="truncate">{file.name}</div>
           </div>
@@ -61,14 +62,14 @@ export const FileCard = ({
             alt={file.name}
             fill
             src={file.url!}
-            className="object-cover h-full w-full p-[inherit]"
+            className="object-cover p-[inherit]"
           />
         )}
         {file.type === "pdf" && (
           <Image alt={file.name} height={100} width={200} src="/pdf.webp" />
         )}
       </CardContent>
-      <CardFooter>
+      <CardFooter className="flex justify-between items-center">
         <Button
           onClick={() => {
             if (file.url) {
@@ -77,6 +78,20 @@ export const FileCard = ({
           }}
         >
           Download
+        </Button>
+        <Button
+          onClick={() => {
+            toggleFavorite({ fileId: file._id });
+          }}
+          variant="ghost"
+          className="p-0 hover:bg-transparent"
+        >
+          <Star
+            className={cn(
+              "h-5 w-5",
+              file.isFavorite && "fill-yellow-200 text-yellow-200"
+            )}
+          />
         </Button>
       </CardFooter>
 

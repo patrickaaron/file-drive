@@ -25,6 +25,7 @@ export default defineSchema({
     orgId: v.string(),
   })
     .index("by_user_org", ["userId", "orgId"])
+    .index("by_user_file", ["userId", "fileId"])
     .index("by_user_file_org", ["userId", "fileId", "orgId"]),
   users: defineTable({
     clerkId: v.string(),
