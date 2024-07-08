@@ -15,6 +15,7 @@ interface FileBrowserProps {
   query: {
     search?: string;
     favorites?: boolean;
+    trash?: boolean;
   };
 }
 
@@ -25,12 +26,6 @@ export const FileBrowser = ({ orgId, query }: FileBrowserProps) => {
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-4xl font-bold">
-          {!query.favorites ? "Your Files" : "Your Favorites"}
-        </h1>
-        <UploadButton />
-      </div>
       <SearchInput disabled={isLoading} />
       {/* Loading state */}
       {isLoading && (

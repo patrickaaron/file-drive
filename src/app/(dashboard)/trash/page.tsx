@@ -3,16 +3,15 @@
 import { useAuth, useOrganization } from "@clerk/nextjs";
 
 import { Heading } from "@/components/Heading";
-import { FileBrowser } from "./file-browser";
-import { UploadButton } from "@/components/UploadButton";
+import { FileBrowser } from "../file-browser";
 
-interface DashboardPageProps {
+interface TrashPageProps {
   searchParams: {
     search?: string;
   };
 }
 
-export default function DashboardPage({ searchParams }: DashboardPageProps) {
+export default function TrashPage({ searchParams }: TrashPageProps) {
   const { organization } = useOrganization();
   const { userId } = useAuth();
   const organizationId = organization?.id ?? userId;
@@ -27,8 +26,11 @@ export default function DashboardPage({ searchParams }: DashboardPageProps) {
 
   return (
     <div className="pt-12 px-4 lg:px-8">
-      <Heading title="Your Files" formActionElement={<UploadButton />} />
-      <FileBrowser orgId={organizationId} query={{ ...searchParams }} />
+      <Heading title="Trash" />
+      <FileBrowser
+        orgId={organizationId}
+        query={{ ...searchParams, trash: true }}
+      />
     </div>
   );
 }

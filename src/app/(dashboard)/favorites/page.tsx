@@ -2,6 +2,7 @@
 
 import { useAuth, useOrganization } from "@clerk/nextjs";
 
+import { Heading } from "@/components/Heading";
 import { FileBrowser } from "../file-browser";
 
 interface FavoritesPageProps {
@@ -15,16 +16,21 @@ export default function FavoritesPage({ searchParams }: FavoritesPageProps) {
   const { userId } = useAuth();
   const organizationId = organization?.id ?? userId;
 
+  if (!organizationId) {
+    return (
+      <div className="pt-12 px-4 lg:px-8">
+        <div>Loading organization...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="pt-12 px-4 lg:px-8">
-      {!organizationId ? (
-        <div>Loading organization...</div>
-      ) : (
-        <FileBrowser
-          orgId={organizationId}
-          query={{ ...searchParams, favorites: true }}
-        />
-      )}
+      <Heading title="Favorites" />
+      <FileBrowser
+        orgId={organizationId}
+        query={{ ...searchParams, favorites: true }}
+      />
     </div>
   );
 }

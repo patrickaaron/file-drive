@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FileIcon, Star } from "lucide-react";
+import { FileIcon, Star, Trash } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 
@@ -22,7 +22,7 @@ export const Sidebar = () => {
             pathname === "/" && "active-link"
           )}
         >
-          <div className="flex p-3 items-center flex-1 gap-x-2">
+          <div className="flex p-3 items-center flex-1 gap-x-2 pl-6">
             <FileIcon className="h-4 w-4" />
             All Files
           </div>
@@ -35,9 +35,22 @@ export const Sidebar = () => {
             pathname === "/favorites" && "active-link"
           )}
         >
-          <div className="flex p-3 items-center flex-1 gap-x-2">
+          <div className="flex p-3 items-center flex-1 gap-x-2 pl-6">
             <Star className="h-4 w-4" />
             Favorites
+          </div>
+        </Link>
+
+        <Link
+          href="/trash"
+          className={cn(
+            "relative group flex w-full justify-start  hover:bg-blue-100/25 transition",
+            pathname === "/trash" && "active-link"
+          )}
+        >
+          <div className="flex p-3 items-center flex-1 gap-x-2 pl-6">
+            <Trash className="h-4 w-4" />
+            Trash
           </div>
         </Link>
       </div>

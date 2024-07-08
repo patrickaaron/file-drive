@@ -21,7 +21,7 @@ export const SearchInput = ({ disabled }: SearchInputProps) => {
   return (
     <div className="rounded-lg border py-3 px-3 md:px-4 flex justify-between items-center mb-4 gap-x-2">
       <Input
-        placeholder="What file are you looking for?"
+        placeholder="Search in FileDrive"
         value={value}
         onChange={(e) => setValue(e.target.value)}
         onKeyDown={(e) => {
