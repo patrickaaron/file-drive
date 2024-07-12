@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { FileIcon, Star, Trash } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 export const Sidebar = () => {
   const pathname = usePathname();
@@ -12,7 +13,10 @@ export const Sidebar = () => {
   return (
     <div className="hidden h-full md:block md:fixed md:inset-y-0 md:w-72 bg-blue-50">
       <div className="flex h-[60px] items-center px-4 cursor-pointer">
-        🗂️ FileDrive
+        <div className="relative h-8 w-8 mr-4">
+          <Image src="/logo.png" alt="File Drive logo" fill />
+        </div>
+        <h1 className="text-xl font-bold">FileDrive</h1>
       </div>
       <div className="flex flex-col space-y-1 text-sm md:text-base">
         <Link

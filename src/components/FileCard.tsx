@@ -40,7 +40,7 @@ export const FileCard = ({ file }: FileCardProps) => {
           </div>
         </CardTitle>
       </CardHeader>
-      <CardContent className="h-[200px] flex justify-center items-center relative">
+      <CardContent className="h-[200px] flex justify-center items-center relative pb-2">
         {file.type === "image" && (
           <Image
             alt={file.name}
@@ -53,39 +53,29 @@ export const FileCard = ({ file }: FileCardProps) => {
           <Image alt={file.name} height={100} width={200} src="/pdf.webp" />
         )}
       </CardContent>
-      <CardFooter className="flex justify-between items-center">
+      <CardFooter className="flex justify-end items-center pb-2">
         {!file.isArchived && (
-          <>
-            <Button
-              onClick={() => {
-                if (file.url) {
-                  window.open(file.url, "_blank");
-                }
-              }}
-            >
-              Download
-            </Button>
-            <Button
-              onClick={() => {
-                toggleFavorite({ fileId: file._id });
-              }}
-              variant="ghost"
-              className="p-0 hover:bg-transparent"
-            >
-              <Star
-                className={cn(
-                  "h-5 w-5",
-                  file.isFavorite && "fill-yellow-200 text-yellow-200"
-                )}
-              />
-            </Button>
-          </>
+          <Button
+            onClick={() => {
+              toggleFavorite({ fileId: file._id });
+            }}
+            variant="ghost"
+            className="p-0 hover:bg-transparent"
+          >
+            <Star
+              className={cn(
+                "h-5 w-5",
+                file.isFavorite && "fill-yellow-200 text-yellow-200"
+              )}
+            />
+          </Button>
         )}
       </CardFooter>
 
       <FileActions
         id={file._id}
         fileName={file.name}
+        url={file.url}
         authorName={file.authorName}
         authorId={file.authorId}
         isArchived={file.isArchived}

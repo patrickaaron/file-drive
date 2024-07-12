@@ -45,7 +45,7 @@ export const RenameModal = ({
     renameFile({ fileId: id, name: filename })
       .then(() => {
         toast({
-          variant: "success",
+          title: "Done",
           description: "File renamed",
         });
         onOpenChange(false);

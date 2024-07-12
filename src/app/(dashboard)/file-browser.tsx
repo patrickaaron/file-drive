@@ -24,6 +24,21 @@ export const FileBrowser = ({ orgId, query }: FileBrowserProps) => {
 
   const isLoading = files === undefined;
 
+  if (Object.values(query).length === 0 && files?.length === 0) {
+    return (
+      <div className="mt-20 flex flex-col items-center justify-center gap-y-8">
+        <Image
+          alt="picture of a clipboard"
+          width={200}
+          height={200}
+          src="/empty.svg"
+        />
+        <h1>This organization does not have any files</h1>
+        <UploadButton />
+      </div>
+    );
+  }
+
   return (
     <div>
       <SearchInput disabled={isLoading} />
@@ -42,13 +57,9 @@ export const FileBrowser = ({ orgId, query }: FileBrowserProps) => {
             height={200}
             src="/empty.svg"
           />
-          {!query.search ? (
-            <p>This organization does not have any files yet</p>
-          ) : (
-            <p>No files found</p>
-          )}
-
-          {!query.search && <UploadButton />}
+          {query.search && <h1>No files matched your search</h1>}
+          {query.favorites && <h1>No favorited files</h1>}
+          {query.trash && <h1>Nothing in trash</h1>}
         </div>
       )}
       {/* Render file cards */}

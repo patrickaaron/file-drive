@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Protect, useAuth } from "@clerk/nextjs";
-import { ArchiveRestore, Edit, Trash, Trash2 } from "lucide-react";
+import { ArchiveRestore, Download, Edit, Trash, Trash2 } from "lucide-react";
 import { useMutation } from "convex/react";
 
 import { Id } from "../../convex/_generated/dataModel";
@@ -21,6 +21,7 @@ interface FileActionsProps {
   children: React.ReactNode;
   id: Id<"files">;
   fileName: string;
+  url?: string | null;
   authorId: string;
   authorName: string;
   isArchived: boolean;
@@ -30,6 +31,7 @@ export const FileActions = ({
   children,
   id,
   fileName,
+  url,
   authorId,
   authorName,
   isArchived,
@@ -74,6 +76,16 @@ export const FileActions = ({
           </div>
         ) : (
           <div>
+            <DropdownMenuItem
+              onClick={() => {
+                if (url) {
+                  window.open(url, "_blank");
+                }
+              }}
+            >
+              <Download className="h-4 w-4 mr-2 " />
+              Download
+            </DropdownMenuItem>
             {isFileAuthor && (
               <DropdownMenuItem onClick={() => setIsRenameDialogOpen(true)}>
                 <Edit className="h-4 w-4 mr-2 " />
