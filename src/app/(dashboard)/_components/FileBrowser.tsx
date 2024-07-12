@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Grid, List, Loader } from "lucide-react";
+import { Loader } from "lucide-react";
 
 import { useQuery } from "convex/react";
 import { api } from "../../../../convex/_generated/api";
