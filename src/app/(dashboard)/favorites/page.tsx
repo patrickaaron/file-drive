@@ -3,7 +3,7 @@
 import { useAuth, useOrganization } from "@clerk/nextjs";
 
 import { Heading } from "@/components/Heading";
-import { FileBrowser } from "../file-browser";
+import { FileBrowser } from "../_components/FileBrowser";
 
 interface FavoritesPageProps {
   searchParams: {

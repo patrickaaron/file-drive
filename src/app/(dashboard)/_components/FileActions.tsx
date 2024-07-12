@@ -3,8 +3,8 @@ import { Protect, useAuth } from "@clerk/nextjs";
 import { ArchiveRestore, Download, Edit, Trash, Trash2 } from "lucide-react";
 import { useMutation } from "convex/react";
 
-import { Id } from "../../convex/_generated/dataModel";
-import { api } from "../../convex/_generated/api";
+import { Id } from "../../../../convex/_generated/dataModel";
+import { api } from "../../../../convex/_generated/api";
 
 import {
   DropdownMenu,
@@ -12,10 +12,10 @@ import {
   DropdownMenuItem,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu";
-import { ConfirmDeleteModal } from "./ConfirmDeleteModal";
-import { toast } from "./ui/use-toast";
-import { RenameModal } from "./RenameModal";
+} from "@/components/ui/dropdown-menu";
+import { ConfirmDeleteModal } from "@/components/ConfirmDeleteModal";
+import { toast } from "@/components/ui/use-toast";
+import { RenameModal } from "@/components/RenameModal";
 
 interface FileActionsProps {
   children: React.ReactNode;

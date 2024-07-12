@@ -4,9 +4,9 @@ import Image from "next/image";
 import { Loader } from "lucide-react";
 
 import { useQuery } from "convex/react";
-import { api } from "../../../convex/_generated/api";
+import { api } from "../../../../convex/_generated/api";
 
-import { FileCard } from "@/components/FileCard";
+import { FileCard } from "./FileCard";
 import { SearchInput } from "@/components/SearchInput";
 import { UploadButton } from "@/components/UploadButton";
 
