@@ -35,6 +35,24 @@ http.route({
   }),
 });
 
+http.route({
+  path: "/getImage",
+  method: "GET",
+  handler: httpAction(async (ctx, request) => {
+    console.log("getImage called");
+    const { searchParams } = new URL(request.url);
+    // This storageId param should be an Id<"_storage">
+    const storageId = searchParams.get("storageId")!;
+    const blob = await ctx.storage.get(storageId);
+    if (blob === null) {
+      return new Response("Image not found", {
+        status: 404,
+      });
+    }
+    return new Response(blob);
+  }),
+});
+
 async function validateRequest(req: Request): Promise<WebhookEvent | null> {
   const payloadString = await req.text();
   const svixHeaders = {
