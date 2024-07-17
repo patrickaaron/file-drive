@@ -46,7 +46,9 @@ export const FileBrowser = ({ orgId, query }: FileBrowserProps) => {
       {/* View Toggler */}
       <div className="flex justify-between items-center my-8 border-b border-base-300 pb-5">
         <h4 className="text-xl font-medium">{files?.length} files found</h4>
-        <ViewToggler activeValue={activeView} onClick={setActiveView} />
+        {files.length !== 0 && (
+          <ViewToggler activeValue={activeView} onClick={setActiveView} />
+        )}
       </div>
       {/* Render empty state when no files are found  */}
       {files.length === 0 && (
