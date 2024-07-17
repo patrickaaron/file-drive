@@ -31,7 +31,10 @@ import { Loader2 } from "lucide-react";
 
 const formSchema = z.object({
   title: z.string().min(2).max(200),
-  file: z.instanceof(FileList).refine((files) => files.length > 0, "Required"),
+  file:
+    typeof window === "undefined"
+      ? z.any()
+      : z.instanceof(FileList).refine((files) => files.length > 0, "Required"),
 });
 
 export const UploadButton = () => {
