@@ -195,6 +195,7 @@ export const deleteFile = mutation({
 
       await ctx.db.delete(args.fileId);
       await ctx.db.delete(possibleFavoritedFile._id);
+      await ctx.storage.delete(file.fileId);
 
       return;
     }
