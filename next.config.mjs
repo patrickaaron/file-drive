@@ -5,6 +5,9 @@ const nextConfig = {
       {
         hostname: "frugal-kookabura-152.convex.cloud",
       },
+      {
+        hostname: "determined-chameleon-803.convex.cloud",
+      },
     ],
   },
 };
