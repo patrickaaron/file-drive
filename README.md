@@ -1,36 +1,119 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Description
 
-## Getting Started
+File Drive is a cloud-based file management system that allows users to upload, organize, and manage their files efficiently. It provides essential features such as authentication, file organization, and real-time updates using Convex as the backend.
 
-First, run the development server:
+## Tech Stack
 
-```bash
+- **Frontend**: Next.js 14, React 18
+- **Styling**: Tailwind CSS, Radix UI
+- **State Management**: Convex (serverless backend)
+- **Backend**: Convex functions
+- **Database**: Convex Database
+- **APIs Used**: Clerk for authentication
+
+## Key Features
+
+- **File Upload & Management**: Users can upload, rename, delete, and organize files.
+- **Favorites & Trash System**: Move files to favorites or trash for better organization.
+- **Authentication**: Secure user authentication via Clerk.
+- **Real-time Updates**: Instant file updates using Convex backend.
+- **Search & Filtering**: Users can search and filter files efficiently.
+- **Intuitive UI**: Responsive and accessible interface with Radix UI.
+
+## Overview of APIs used
+
+### Authentication
+
+- **Clerk API**: Handles user authentication and session management.
+
+### File Management (Internal Convex API)
+
+- **`POST /api/files/upload`** → Uploads a file.
+- **`GET /api/files`** → Retrieves all user files.
+- **`PATCH /api/files/:id`** → Renames or updates file metadata.
+- **`DELETE /api/files/:id`** → Moves file to trash or deletes it permanently.
+
+## Project Setup & Installation
+
+```
+git clone <https://github.com/yourusername/file-drive.git>
+cd file-drive
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Environment Variables
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Create a `.env.local` file and configure the following:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```
+CONVEX_DEPLOYMENT=your_convex_deployment_site
 
-## Learn More
+NEXT_PUBLIC_CONVEX_URL=your_convex_url
+NEXT_PUBLIC_CONVEX_SITE_URL=your_convex_site_url
 
-To learn more about Next.js, take a look at the following resources:
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_publishable_key
+CLERK_SECRET_KEY=your_clerk_secret_key
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Challenges & Solutions
 
-## Deploy on Vercel
+### Challenge 1: Handling Real-time Updates
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**Problem**: Ensuring file updates reflect instantly without reloading.
+**Solution**: Used Convex’s built-in real-time sync feature to update UI dynamically.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Challenge 2: Secure File Uploads
+
+**Problem**: Prevent unauthorized file uploads.
+**Solution**: Integrated Clerk authentication to verify users before allowing file operations.
+
+## Architecture & Code Structure
+
+```
+/file-drive
+  ├── /convex  # Convex backend functions
+  │   ├── auth.config.ts
+  │   ├── files.ts
+  │   ├── users.ts
+  │   ├── schema.ts
+  │
+  ├── /src
+  │   ├── /app/(dashboard)  # Main dashboard pages
+  │   ├── /components  # Reusable UI components
+  │   ├── /lib  # Utility functions
+  │   ├── middleware.ts  # API authentication logic
+
+```
+
+### Explanation
+
+- **Convex** handles database operations and API logic.
+- **Next.js App Directory** follows a modular approach for pages and UI components.
+- **Middleware** ensures secure API access.
+
+## Lessons Learned
+
+- Leveraging serverless databases like Convex simplifies backend operations.
+- Clerk makes authentication seamless for modern applications.
+- Real-time updates significantly improve user experience in file management systems.
+
+## Future Improvements
+
+- **Drag & Drop Upload**: Enhance the UI for better file uploads.
+- **File Sharing**: Allow users to share files with links.
+- **Version Control**: Maintain file version history.
+
+## Deployment
+
+- **Platform**: Vercel
+- **Deployment Issues**: Initial Clerk authentication setup required proper domain configuration.
+
+## References & Resources
+
+- [Convex Documentation](https://docs.convex.dev/)
+- [Clerk Authentication Guide](https://clerk.dev/docs)
+- [Next.js App Router](https://nextjs.org/docs/app)
+- [Tailwind CSS](https://tailwindcss.com/docs)
